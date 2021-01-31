@@ -1,0 +1,25 @@
+app:
+  name: "go_web_template"
+  mode: "debug"
+  port: 8080
+  start_time: "2021-01-31"
+  machine_id: 1
+log:
+  level: "debug"
+  filename: "go_web_template.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+  mode: "dev"
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "123456"
+  dbname: "kratos"
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 100
