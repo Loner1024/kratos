@@ -52,10 +52,13 @@ func LoginHandler(c *gin.Context) {
 		ResponseErrorWithMessage(c, CodeInvalidParam, errs.Translate(trans))
 		return
 	}
-	if err = logic.Login(&p); err != nil {
+	var token string
+	if token, err = logic.Login(&p); err != nil {
 		ResponseErrorWithMessage(c, CodeUserExist, err.Error())
 		return
 	}
 	zap.L().Info("User Login", zap.String("user", p.Username))
-	ResponseSuccess(c, "Login ok")
+	ResponseSuccess(c, gin.H{
+		"Token": token,
+	})
 }

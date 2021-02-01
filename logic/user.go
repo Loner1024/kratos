@@ -4,6 +4,7 @@ import (
 	"errors"
 	"kratos/dao/mysql"
 	"kratos/models"
+	"kratos/pkg/jwt"
 	"kratos/pkg/snowflake"
 )
 
@@ -28,14 +29,16 @@ func SignUp(p *models.ParamSignUp) error {
 	return nil
 }
 
-func Login(p *models.ParamLogin) error {
+func Login(p *models.ParamLogin) (token string, err error) {
 	user := models.User{
 		Username: p.Username,
 		Password: p.Password,
 	}
-	err := mysql.Login(&user)
-	if err != nil {
-		return err
+	if err = mysql.Login(&user); err != nil {
+		return "", err
 	}
-	return nil
+	if token, err = jwt.GenToken(user.UserID, user.Username); err != nil {
+		return "", err
+	}
+	return token, nil
 }
