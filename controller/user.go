@@ -30,7 +30,6 @@ func SignUpHandler(c *gin.Context) {
 	if err := logic.SignUp(&p); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"msg": "Sign Up failed",
-			// "err": err.Error(),
 		})
 		return
 	}
@@ -47,24 +46,16 @@ func LoginHandler(c *gin.Context) {
 		zap.L().Error("SignUp with invalid param", zap.Error(err))
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			c.JSON(http.StatusOK, gin.H{
-				"msg": err.Error(),
-			})
+			ResponseError(c, CodeInvalidParam)
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"msg": errs.Translate(trans),
-		})
+		ResponseErrorWithMessage(c, CodeInvalidParam, errs.Translate(trans))
 		return
 	}
 	if err = logic.Login(&p); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"msg": err.Error(),
-		})
+		ResponseErrorWithMessage(c, CodeUserExist, err.Error())
 		return
 	}
 	zap.L().Info("User Login", zap.String("user", p.Username))
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "Login OK",
-	})
+	ResponseSuccess(c, "Login ok")
 }
